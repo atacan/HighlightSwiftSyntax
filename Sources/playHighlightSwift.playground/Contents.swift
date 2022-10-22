@@ -26,7 +26,7 @@ override public func visit(_ node: TupleExprElementSyntax) -> Syntax {
 }
 """
 
-let output = try SwiftHighlighter().highlight(inputCode)
+let output = try SwiftHighlighter.highlight(inputCode)
 
 PlaygroundPage.current.setLiveView(
     ZStack {
