@@ -19,3 +19,4 @@ override public func visit(_ node: TupleExprElementSyntax) -> Syntax {
 
 let output = try SwiftHighlighter().highlight(inputCode)
 ```
+<img width="885" alt="Screenshot 2022-10-22 at 18 02 05" src="https://user-images.githubusercontent.com/765873/197349249-d7bc0770-9426-4d21-b55c-25874f572cad.png">
