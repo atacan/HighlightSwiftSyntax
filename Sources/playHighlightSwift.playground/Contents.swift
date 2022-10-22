@@ -30,10 +30,10 @@ let output = try SwiftHighlighter().highlight(inputCode)
 
 PlaygroundPage.current.setLiveView(
     ZStack {
-        Rectangle().foregroundColor(Color(nsColor: .textBackgroundColor))
+        Rectangle().foregroundColor(.black)
         Text(AttributedString(output))
-            .font(.monospaced(.body)())
-            .font(.title)
+            .font(.monospaced(.title2)())
+            .padding()
     }
 )
 //PlaygroundPage.current.setLiveView(Rectangle()
