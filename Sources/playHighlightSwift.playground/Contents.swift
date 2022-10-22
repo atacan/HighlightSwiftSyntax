@@ -5,8 +5,6 @@ import SwiftSyntax
 import SwiftSyntaxParser
 import SwiftUI
 
-
-
 var greeting = "Hello, playground"
 let mainString = "Hello World"
 let stringToColor = "World"
@@ -28,19 +26,12 @@ override public func visit(_ node: TupleExprElementSyntax) -> Syntax {
 }
 """
 
-let rewriter = SwiftHighlighterRewriter()
-let inputSource = try SyntaxParser.parse(source: inputCode)
-_ = rewriter.visit(inputSource)
-
-//dump(rewriter.debugDict)
-//dump(rewriter.parsedCode)
-
-let colorizer = Colorizer(inputCode: inputCode, rangeToKind: rewriter.parsedCode.rangeToKind)
+let output = try SwiftHighlighter().highlight(inputCode)
 
 PlaygroundPage.current.setLiveView(
     ZStack {
         Rectangle().foregroundColor(Color(nsColor: .textBackgroundColor))
-        Text(AttributedString(colorizer.highlightedCode()))
+        Text(AttributedString(output))
             .font(.monospaced(.body)())
             .font(.title)
     }
