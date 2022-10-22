@@ -73,7 +73,7 @@ struct Colorizer {
         }
     }
 
-    func highlightedCode() -> NSAttributedString {
+    func highlightedCode() -> NSMutableAttributedString {
         let attributedInput = NSMutableAttributedString(string: inputCode)
         for (range, kind) in rangeToKind {
             let color = colorFor(tokenKind: kind)

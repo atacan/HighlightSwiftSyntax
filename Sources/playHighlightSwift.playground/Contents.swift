@@ -4,6 +4,7 @@ import PlaygroundSupport
 import SwiftSyntax
 import SwiftSyntaxParser
 import SwiftUI
+import WebKit
 
 var greeting = "Hello, playground"
 let mainString = "Hello World"
@@ -26,16 +27,31 @@ override public func visit(_ node: TupleExprElementSyntax) -> Syntax {
 }
 """
 
-let output = try SwiftHighlighter.highlight(inputCode)
+let output = try SwiftHighlighter(inputCode: inputCode).highlight()
+let outputHtml = try SwiftHighlighter(inputCode: inputCode).toHtml()
 
-PlaygroundPage.current.setLiveView(
-    ZStack {
-        Rectangle().foregroundColor(.black)
-        Text(AttributedString(output))
-            .font(.monospaced(.title2)())
-            .padding()
+let webView = WKWebView(frame: .init(x: 0, y: 0, width: 520, height: 200))
+webView.loadHTMLString(outputHtml, baseURL: nil)
+
+struct OutputView: View {
+    var body: some View {
+        VStack{
+            ZStack {
+                Rectangle().foregroundColor(.black)
+                Text(AttributedString(output))
+                    .font(.monospaced(.body)())
+                    .padding()
+            }
+        }
     }
-)
+}
+
+print(outputHtml)
+
+//PlaygroundPage.current.setLiveView(OutputView())
+PlaygroundPage.current.liveView = webView
+
+
 //PlaygroundPage.current.setLiveView(Rectangle()
 ////    .foregroundColor(Color(nsColor: NSColor(deviceRed: 0.942109, green: 0 , blue: 0.630242, alpha: 1)))
 ////    .foregroundColor(Color(nsColor: NSColor(red: 0.942109, green: 0 , blue: 0.630242, alpha: 1)))
