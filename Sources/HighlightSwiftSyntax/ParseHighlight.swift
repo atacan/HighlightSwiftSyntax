@@ -7,7 +7,7 @@ import Foundation
 import SwiftSyntax
 import SwiftSyntaxParser
 
-public enum MyWordKind {
+enum MyWordKind {
     case keyWord
     case plainText
     case string
@@ -35,12 +35,12 @@ public enum MyWordKind {
     }
 }
 
-public struct ParsedCode {
-    public var rangeToKind = [NSRange: MyWordKind]()
+struct ParsedCode {
+    var rangeToKind = [NSRange: MyWordKind]()
 }
 
-public struct Colorizer {
-    public init(inputCode: String, rangeToKind: [NSRange: MyWordKind]) {
+struct Colorizer {
+    init(inputCode: String, rangeToKind: [NSRange: MyWordKind]) {
         self.inputCode = inputCode
         self.rangeToKind = rangeToKind
     }
@@ -73,7 +73,7 @@ public struct Colorizer {
         }
     }
 
-    public func highlightedCode() -> NSAttributedString {
+    func highlightedCode() -> NSAttributedString {
         let attributedInput = NSMutableAttributedString(string: inputCode)
         for (range, kind) in rangeToKind {
             let color = colorFor(tokenKind: kind)
@@ -94,9 +94,9 @@ extension ProtocolDeclSyntax: HasIdentifier {}
 extension EnumDeclSyntax: HasIdentifier {}
 // extension VariableDeclSyntax: HasIdentifier {}
 
-public class SwiftHighlighterRewriter: SyntaxRewriter {
-    public var parsedCode = ParsedCode()
-    public var debugDict = [Int: TokenKind]()
+class SwiftHighlighterRewriter: SyntaxRewriter {
+    var parsedCode = ParsedCode()
+    var debugDict = [Int: TokenKind]()
 
     private func updateDict(location: Int, length: Int, kind: MyWordKind) {
         let range = NSRange(location: location, length: length)
@@ -114,34 +114,34 @@ public class SwiftHighlighterRewriter: SyntaxRewriter {
 
     // MARK: - Overrides
 
-    override public func visit(_ token: TokenSyntax) -> Syntax {
+    override func visit(_ token: TokenSyntax) -> Syntax {
         updateDict(location: token.positionAfterSkippingLeadingTrivia.utf8Offset,
                    length: token.contentLength.utf8Length,
                    kind: .init(swiftSyntaxTokenKind: token.tokenKind))
         return super.visit(token)
     }
 
-    override public func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
+    override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
         typeDeclaration(node)
         return super.visit(node)
     }
 
-    override public func visit(_ node: EnumDeclSyntax) -> DeclSyntax {
+    override func visit(_ node: EnumDeclSyntax) -> DeclSyntax {
         typeDeclaration(node)
         return super.visit(node)
     }
 
-    override public func visit(_ node: StructDeclSyntax) -> DeclSyntax {
+    override func visit(_ node: StructDeclSyntax) -> DeclSyntax {
         typeDeclaration(node)
         return super.visit(node)
     }
 
-    override public func visit(_ node: ProtocolDeclSyntax) -> DeclSyntax {
+    override func visit(_ node: ProtocolDeclSyntax) -> DeclSyntax {
         typeDeclaration(node)
         return super.visit(node)
     }
 
-    override public func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+    override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
         if let firstToken = node.bindings.firstToken {
             updateDict(location: firstToken.positionAfterSkippingLeadingTrivia.utf8Offset,
                        length: firstToken.contentLength.utf8Length,
@@ -150,28 +150,28 @@ public class SwiftHighlighterRewriter: SyntaxRewriter {
         return super.visit(node)
     }
 
-    override public func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
+    override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
         updateDict(location: node.identifier.positionAfterSkippingLeadingTrivia.utf8Offset,
                    length: node.identifier.contentLength.utf8Length,
                    kind: .otherDeclaration)
         return super.visit(node)
     }
 
-    override public func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+    override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
         updateDict(location: node.calledExpression.positionAfterSkippingLeadingTrivia.utf8Offset,
                    length: node.calledExpression.contentLength.utf8Length,
                    kind: .functionCall)
         return super.visit(node)
     }
 
-    override public func visit(_ node: SimpleTypeIdentifierSyntax) -> TypeSyntax {
+    override func visit(_ node: SimpleTypeIdentifierSyntax) -> TypeSyntax {
         updateDict(location: node.name.positionAfterSkippingLeadingTrivia.utf8Offset,
                    length: node.name.contentLength.utf8Length,
                    kind: .typeUsed)
         return super.visit(node)
     }
 
-    override public func visit(_ node: TupleExprElementSyntax) -> Syntax {
+    override func visit(_ node: TupleExprElementSyntax) -> Syntax {
         if let label = node.label {
             updateDict(location: label.positionAfterSkippingLeadingTrivia.utf8Offset,
                        length: label.contentLength.utf8Length,
@@ -180,14 +180,14 @@ public class SwiftHighlighterRewriter: SyntaxRewriter {
         return super.visit(node)
     }
 
-    override public func visit(_ node: DeclModifierSyntax) -> Syntax {
+    override func visit(_ node: DeclModifierSyntax) -> Syntax {
         updateDict(location: node.name.positionAfterSkippingLeadingTrivia.utf8Offset,
                    length: node.name.contentLength.utf8Length,
                    kind: .keyWord)
         return super.visit(node)
     }
 
-    override public func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
+    override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
         if let base = node.base,
            let firstCharacter = base.description.unicodeScalars.first,
            CharacterSet.uppercaseLetters.contains(firstCharacter)

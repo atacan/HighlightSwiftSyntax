@@ -7,6 +7,7 @@ import Foundation
 import SwiftSyntaxParser
 
 public struct SwiftHighlighter {
+    public init() {}
     public func highlight(_ inputCode: String) throws -> NSAttributedString {
         let rewriter = SwiftHighlighterRewriter()
         let inputSource = try SyntaxParser.parse(source: inputCode)
