@@ -15,18 +15,25 @@ public enum HighlightKind {
     case documentComment
     case functionCall
     case keyWord
+    /// token accessed via dot operator
     case member
+    /// integer or floating number literals
     case numeric
     /// variable or constant names when they are first declared
     case otherDeclaration
     /// function input parameter name to be used in the function scope
     case parameterName
+    /// when no other kind matches
     case plainText
+    /// #if, #endif etc.
     case preprocessor
     /// xcode snippet placeholders
     case snippetPlaceholder
+    /// string with its quotes
     case string
+    /// name of enum, class, struct, protocol when it's defined
     case typeDeclaration
+    /// type name in usage
     case typeUsed
     case whiteSpace
     // swiftformat:sort:end
