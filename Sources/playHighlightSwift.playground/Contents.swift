@@ -27,34 +27,34 @@ override public func visit(_ node: TupleExprElementSyntax) -> Syntax {
 }
 """
 
-let output = try SwiftHighlighter(inputCode: inputCode).highlight()
-let outputHtml = try SwiftHighlighter(inputCode: inputCode).toHtml()
+//let inputCode = """
+//
+//let nsrange = NSRange(location: 0, length: 0)
+//struct OutputView: View {}
+//super.visit(node)
+//"""
 
-let webView = WKWebView(frame: .init(x: 0, y: 0, width: 520, height: 200))
-webView.loadHTMLString(outputHtml, baseURL: nil)
+//let inputCode = """
+///// My documentation comment
+//let inputCode: String
+//let myNumber = 34.9
+//// line comment
+//override public func visit(_ label: String) -> Int {
+//    print("Amazing!")
+//    super.visit()
+//}
+//"""
+
+let output = try SwiftHighlighter.init(inputCode: inputCode).highlight()
 
 struct OutputView: View {
+    
     var body: some View {
-        VStack{
-            ZStack {
-                Rectangle().foregroundColor(.black)
-                Text(AttributedString(output))
-                    .font(.monospaced(.body)())
-                    .padding()
-            }
+        ZStack {
+            Rectangle().foregroundColor(.black)
+            Text(AttributedString(output))
         }
     }
 }
 
-print(outputHtml)
-
-//PlaygroundPage.current.setLiveView(OutputView())
-PlaygroundPage.current.liveView = webView
-
-
-//PlaygroundPage.current.setLiveView(Rectangle()
-////    .foregroundColor(Color(nsColor: NSColor(deviceRed: 0.942109, green: 0 , blue: 0.630242, alpha: 1)))
-////    .foregroundColor(Color(nsColor: NSColor(red: 0.942109, green: 0 , blue: 0.630242, alpha: 1)))
-//    .foregroundColor(Color(nsColor: NSColor(red: CGFloat(66) / 255, green: CGFloat(142) / 255 , blue: CGFloat(215) / 255, alpha: 1)))
-//    .frame(width: 40, height: 40)
-//)
+PlaygroundPage.current.setLiveView(OutputView())

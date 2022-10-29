@@ -4,46 +4,118 @@
 
 import Cocoa
 import Foundation
+import Prelude
+import SwiftSyntax
 import SwiftSyntaxParser
 
 public struct SwiftHighlighter {
-    enum HighlighterError: Error {
-        case stringFromData
-    }
-
-    public init(inputCode: String) {
+    public typealias KindToColor = (HighlightKind) -> NSColor
+    public typealias KindToFont = (HighlightKind) -> NSFont
+    public init(inputCode: String, colorFor: KindToColor? = nil, fontFor: KindToFont? = nil) {
         self.inputCode = inputCode
+        if let colorFor {
+            self.colorFor = colorFor
+        } else {
+            self.colorFor = amazeMidnightColor
+        }
+        if let fontFor {
+            self.fontFor = fontFor
+        } else {
+            self.fontFor = amazeMidnightFont
+        }
     }
 
     let inputCode: String
+    var colorFor: (HighlightKind) -> NSColor
+    var fontFor: (HighlightKind) -> NSFont
 
-    private func highlightToMutable() throws -> NSMutableAttributedString {
+    public func highlight() throws -> NSMutableAttributedString {
         let rewriter = SwiftHighlighterRewriter()
         let inputSource = try SyntaxParser.parse(source: inputCode)
         _ = rewriter.visit(inputSource)
 
-        let colorizer = Colorizer(inputCode: inputCode, rangeToKind: rewriter.parsedCode.rangeToKind)
-        let output = colorizer.highlightedCode()
+        let output = NSMutableAttributedString()
+
+        for token in rewriter.parsedCode.tokens {
+            print(token.text, HighlightKind.convertSwiftSyntax(token), token.tokenKind, token.tokenClassification, "\n")
+
+            let wordAttributed = appendableToken(token)
+            output.append(wordAttributed)
+        }
+
         return output
     }
 
-    public func highlight() throws -> NSAttributedString {
-        try NSAttributedString(attributedString: highlightToMutable())
+    private func appendableToken(_ token: TokenSyntax) -> NSMutableAttributedString {
+        let output = NSMutableAttributedString()
+        let prefix = token.leadingTrivia |> triviaText(_:)
+        let word = token.text
+        let suffix = token.trailingTrivia |> triviaText(_:)
+
+        let kind = HighlightKind.convertSwiftSyntax(token)
+        let wordAttributed = coloredText(kind: kind, content: word)
+
+        output.append(prefix)
+        output.append(wordAttributed)
+        output.append(suffix)
+
+        return output
     }
 
-    public func toHtml() throws -> String {
-        // make monospace
-        let output = try highlightToMutable()
-//        let attributes = [NSAttributedString.Key.font: NSFont.monospacedSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)]
-        let attributes = [NSAttributedString.Key.font: NSFont(name: "Menlo", size: 11) ?? NSFont.monospacedSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)]
-        output.addAttributes(attributes, range: NSRange(location: 0, length: output.length))
-        // convert to Html
-        let htmlData = try output.data(from: NSRange(location: 0, length: output.length),
-                                       documentAttributes: [NSAttributedString.DocumentAttributeKey.documentType: NSAttributedString.DocumentType.html])
-        if let html = String(data: htmlData, encoding: String.Encoding.utf8) {
-            return html
-        } else {
-            throw HighlighterError.stringFromData
+    private func triviaText(_ trivia: Trivia) -> NSAttributedString {
+        let output = NSMutableAttributedString()
+        trivia.forEach { piece in
+            let (kind, content) = HighlightKind.convertTriviaPiece(piece)
+            let wordAttributed = coloredText(kind: kind, content: content)
+            output.append(wordAttributed)
         }
+
+        return output
+    }
+
+    private func coloredText(kind: HighlightKind, content: String) -> NSAttributedString {
+        let color = colorFor(kind)
+        let font = fontFor(kind)
+        let attributes = [NSAttributedString.Key.foregroundColor: color, NSAttributedString.Key.font: font]
+        let wordAttributed = NSAttributedString(string: content, attributes: attributes)
+        return wordAttributed
+    }
+}
+
+func amazeMidnightColor(kind: HighlightKind) -> NSColor {
+    switch kind {
+    case .keyWord:
+        return NSColor(red: 0.942109, green: 0, blue: 0.630242, alpha: 1)
+    case .string:
+        return NSColor(red: 0.988974, green: 0.406344, blue: 0.40599, alpha: 1)
+    case .numeric:
+        return NSColor(red: 0.469, green: 0.426, blue: 1, alpha: 1)
+    case .typeDeclaration:
+        return NSColor(red: 0.999996, green: 0.999939, blue: 0.0410333, alpha: 1)
+    case .otherDeclaration:
+        return NSColor(red: 0.916967, green: 0.794512, blue: 0.0427856, alpha: 1)
+    case .typeUsed:
+        return NSColor(red: 0.131345, green: 0.999677, blue: 0.0236241, alpha: 1)
+    case .functionCall:
+        return NSColor(red: 0.8, green: 1, blue: 0.4, alpha: 1)
+    case .member:
+        return NSColor(red: 0.107763, green: 0.826468, blue: 0.407235, alpha: 1)
+    case .argument:
+        return NSColor(red: CGFloat(66) / 255, green: CGFloat(142) / 255, blue: CGFloat(215) / 255, alpha: 1)
+    case .codeComment:
+        return NSColor(red: 0.464592, green: 0.52429, blue: 0.589355, alpha: 1)
+    case .documentComment:
+        return NSColor(red: 0.464592, green: 0.52429, blue: 0.589355, alpha: 1)
+    default:
+        return NSColor.textColor
+    }
+}
+
+func amazeMidnightFont(kind: HighlightKind) -> NSFont {
+    switch kind {
+    case .documentComment:
+        return NSFont.labelFont(ofSize: NSFont.labelFontSize)
+    default:
+        return NSFont.monospacedSystemFont(ofSize: NSFont.labelFontSize, weight: NSFont.Weight.regular)
     }
 }

@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "swift-prelude",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-prelude",
+      "state" : {
+        "branch" : "main",
+        "revision" : "8d26fe5be7ca9b67f735ea1c83f46cfbe3009df9"
+      }
+    },
+    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
