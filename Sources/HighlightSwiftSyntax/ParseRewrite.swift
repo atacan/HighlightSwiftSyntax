@@ -20,8 +20,8 @@ struct ParsedCode {
     var enhancedWords: [Word] {
         var outputWords = words
         for enhancable in enhancableWords {
-            if enhancable.kind != .plainText,
-               let toReplace = outputWords.firstIndex(where: { word in word.token == enhancable.token })
+            if let toReplace = outputWords.firstIndex(where: { word in word.token == enhancable.token }),
+               outputWords[toReplace].kind == .plainText
             {
                 outputWords[toReplace] = enhancable
             }

@@ -153,7 +153,7 @@ public enum HighlightKind {
         case .__dso_handle__Keyword:
             return .keyWord
         case .wildcardKeyword:
-            return .numeric
+            return .plainText
         case .leftParen:
             return .plainText
         case .rightParen:
