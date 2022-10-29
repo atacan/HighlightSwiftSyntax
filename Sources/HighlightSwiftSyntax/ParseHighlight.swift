@@ -7,16 +7,57 @@ import Foundation
 import SwiftSyntax
 import SwiftSyntaxParser
 
+struct Word: Equatable {
+    var token: TokenSyntax
+    var kind: HighlightKind
+}
+
 struct ParsedCode {
-    var tokens = [TokenSyntax]()
+    var words = [Word]()
+    var enhancableWords = [Word]()
+
+    var enhancedWords: [Word] {
+        var outputWords = words
+        for enhancable in enhancableWords {
+            if enhancable.kind != .plainText {
+                if let toReplace = outputWords.firstIndex(where: { word in word.token == enhancable.token }) {
+                    print("enhanceWords toReplace found", enhancable)
+                    outputWords[toReplace] = enhancable
+                }
+            }
+        }
+
+        return outputWords
+    }
 }
 
 class SwiftHighlighterRewriter: SyntaxRewriter {
     var parsedCode = ParsedCode()
 
     override func visit(_ token: TokenSyntax) -> Syntax {
-        parsedCode.tokens.append(token)
+        let kind = HighlightKind(swiftSyntax: token)
+        let word = Word(token: token, kind: kind)
+        parsedCode.words.append(word)
         return super.visit(token)
+    }
+
+    override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
+        let base: String = node.base?.description ?? ""
+        let member = Word(token: node.name, kind: .member)
+        parsedCode.enhancableWords.append(member)
+//        print("MemberAccessExprSyntax base =", base, "node.name =", node.name)
+        for token in node.tokens {
+            // if the token is for the base then add it, otherwise root is repeated for each nested member
+            if token.text == base {
+                let kind: HighlightKind = base.first?.isUppercase ?? false
+                    ? .typeUsed
+                    : .plainText
+                parsedCode.enhancableWords.append(Word(token: token, kind: kind))
+            }
+//            print("Tokens")
+//            print(token.text, HighlightKind.convertSwiftSyntax(token), token.tokenKind, token.tokenClassification, "\n")
+        }
+        return super.visit(node)
     }
 }
 
@@ -172,7 +213,7 @@ public enum HighlightKind {
         case .__dso_handle__Keyword:
             return .keyWord
         case .wildcardKeyword:
-            return .plainText
+            return .numeric
         case .leftParen:
             return .plainText
         case .rightParen:

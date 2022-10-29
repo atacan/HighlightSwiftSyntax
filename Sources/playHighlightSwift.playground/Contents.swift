@@ -14,14 +14,16 @@ let range = (mainString as NSString).range(of: stringToColor)
 // print(NSRange(location: 5, length: 6))
 
 let inputCode = """
+/// My documentation comment
 let inputCode: String
-let rangeToKind: [NSRange: MyWordKind]
-
-override public func visit(_ node: TupleExprElementSyntax) -> Syntax {
-    if let label = node.label {
-        updateDict(location: label.positionAfterSkippingLeadingTrivia.utf8Offset,
-                   length: label.contentLength.utf8Length,
+// line comment
+override public func calculate(_ benefit: String) -> Universe {
+    if let unwraplabel = chuck.label {
+        updateAccount(location: unwraplabel.startingPoint.utf8Offset,
                    kind: .argument)
+    let a = MyEnum.staticmethod()
+    let b = AnotherEnum.nested.staticmethod()
+    return
     }
     return super.visit(node)
 }

@@ -35,25 +35,25 @@ public struct SwiftHighlighter {
         _ = rewriter.visit(inputSource)
 
         let output = NSMutableAttributedString()
+        let wordsToHighlight = rewriter.parsedCode.enhancedWords
+//        dump(rewriter.parsedCode.enhancableWords)
+        for word in wordsToHighlight {
+//            print(word.token.text, HighlightKind.convertSwiftSyntax(word.token), word.token.tokenKind, word.token.tokenClassification, "\n")
 
-        for token in rewriter.parsedCode.tokens {
-            print(token.text, HighlightKind.convertSwiftSyntax(token), token.tokenKind, token.tokenClassification, "\n")
-
-            let wordAttributed = appendableToken(token)
+            let wordAttributed = appendableToken(word)
             output.append(wordAttributed)
         }
 
         return output
     }
 
-    private func appendableToken(_ token: TokenSyntax) -> NSMutableAttributedString {
+    private func appendableToken(_ word: Word) -> NSMutableAttributedString {
         let output = NSMutableAttributedString()
-        let prefix = token.leadingTrivia |> triviaText(_:)
-        let word = token.text
-        let suffix = token.trailingTrivia |> triviaText(_:)
+        
+        let prefix = word.token.leadingTrivia |> triviaText(_:)
+        let suffix = word.token.trailingTrivia |> triviaText(_:)
 
-        let kind = HighlightKind.convertSwiftSyntax(token)
-        let wordAttributed = coloredText(kind: kind, content: word)
+        let wordAttributed = coloredText(kind: word.kind, content: word.token.text)
 
         output.append(prefix)
         output.append(wordAttributed)
@@ -80,6 +80,9 @@ public struct SwiftHighlighter {
         let wordAttributed = NSAttributedString(string: content, attributes: attributes)
         return wordAttributed
     }
+    
+    
+
 }
 
 func amazeMidnightColor(kind: HighlightKind) -> NSColor {
