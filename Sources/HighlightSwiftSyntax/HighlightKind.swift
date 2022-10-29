@@ -1,75 +1,9 @@
 //
 // https://github.com/atacan
-// 22.10.22
+// 29.10.22
+	
 
-import Cocoa
-import Foundation
 import SwiftSyntax
-import SwiftSyntaxParser
-
-struct Word: Equatable {
-    var token: TokenSyntax
-    var kind: HighlightKind
-}
-
-struct ParsedCode {
-    var words = [Word]()
-    var enhancableWords = [Word]()
-
-    var enhancedWords: [Word] {
-        var outputWords = words
-        for enhancable in enhancableWords {
-            if enhancable.kind != .plainText {
-                if let toReplace = outputWords.firstIndex(where: { word in word.token == enhancable.token }) {
-                    print("enhanceWords toReplace found", enhancable)
-                    outputWords[toReplace] = enhancable
-                }
-            }
-        }
-
-        return outputWords
-    }
-}
-
-class SwiftHighlighterRewriter: SyntaxRewriter {
-    var parsedCode = ParsedCode()
-
-    override func visit(_ token: TokenSyntax) -> Syntax {
-        let kind = HighlightKind(swiftSyntax: token)
-        let word = Word(token: token, kind: kind)
-        parsedCode.words.append(word)
-        return super.visit(token)
-    }
-
-    override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
-        let base: String = node.base?.description ?? ""
-        let member = Word(token: node.name, kind: .member)
-        parsedCode.enhancableWords.append(member)
-//        print("MemberAccessExprSyntax base =", base, "node.name =", node.name)
-        for token in node.tokens {
-            // if the token is for the base then add it, otherwise root is repeated for each nested member
-            if token.text == base {
-                let kind: HighlightKind = base.first?.isUppercase ?? false
-                    ? .typeUsed
-                    : .plainText
-                parsedCode.enhancableWords.append(Word(token: token, kind: kind))
-            }
-//            print("Tokens")
-//            print(token.text, HighlightKind.convertSwiftSyntax(token), token.tokenKind, token.tokenClassification, "\n")
-        }
-        return super.visit(node)
-    }
-}
-
-func debugToken(_ token: TokenSyntax) {
-    print(
-        "token.text", token.text, "token.tokenKind", token.tokenKind, "token.tokenClassification", token.tokenClassification,
-        "token.leadingTrivia", token.leadingTrivia, token.leadingTriviaLength,
-        "token.trailingTrivia", token.trailingTrivia, token.trailingTriviaLength,
-        "\n"
-        // , "token.syntaxNodeType", token.syntaxNodeType,
-    )
-}
 
 public enum HighlightKind {
     // swiftformat:sort
@@ -89,6 +23,7 @@ public enum HighlightKind {
     case typeDeclaration
     case typeUsed
     case whiteSpace
+    case argumentLabel
     // swiftformat:sort:end
 
     static func convertSwiftSyntax(_ swiftSyntax: TokenSyntax) -> HighlightKind {

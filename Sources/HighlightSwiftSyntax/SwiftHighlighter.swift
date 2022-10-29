@@ -11,6 +11,11 @@ import SwiftSyntaxParser
 public struct SwiftHighlighter {
     public typealias KindToColor = (HighlightKind) -> NSColor
     public typealias KindToFont = (HighlightKind) -> NSFont
+
+    let inputCode: String
+    var colorFor: (HighlightKind) -> NSColor
+    var fontFor: (HighlightKind) -> NSFont
+
     public init(inputCode: String, colorFor: KindToColor? = nil, fontFor: KindToFont? = nil) {
         self.inputCode = inputCode
         if let colorFor {
@@ -25,10 +30,6 @@ public struct SwiftHighlighter {
         }
     }
 
-    let inputCode: String
-    var colorFor: (HighlightKind) -> NSColor
-    var fontFor: (HighlightKind) -> NSFont
-
     public func highlight() throws -> NSMutableAttributedString {
         let rewriter = SwiftHighlighterRewriter()
         let inputSource = try SyntaxParser.parse(source: inputCode)
@@ -36,9 +37,8 @@ public struct SwiftHighlighter {
 
         let output = NSMutableAttributedString()
         let wordsToHighlight = rewriter.parsedCode.enhancedWords
-//        dump(rewriter.parsedCode.enhancableWords)
+
         for word in wordsToHighlight {
-//            print(word.token.text, HighlightKind.convertSwiftSyntax(word.token), word.token.tokenKind, word.token.tokenClassification, "\n")
 
             let wordAttributed = appendableToken(word)
             output.append(wordAttributed)
@@ -49,7 +49,7 @@ public struct SwiftHighlighter {
 
     private func appendableToken(_ word: Word) -> NSMutableAttributedString {
         let output = NSMutableAttributedString()
-        
+
         let prefix = word.token.leadingTrivia |> triviaText(_:)
         let suffix = word.token.trailingTrivia |> triviaText(_:)
 
@@ -80,9 +80,6 @@ public struct SwiftHighlighter {
         let wordAttributed = NSAttributedString(string: content, attributes: attributes)
         return wordAttributed
     }
-    
-    
-
 }
 
 func amazeMidnightColor(kind: HighlightKind) -> NSColor {
@@ -109,6 +106,8 @@ func amazeMidnightColor(kind: HighlightKind) -> NSColor {
         return NSColor(red: 0.464592, green: 0.52429, blue: 0.589355, alpha: 1)
     case .documentComment:
         return NSColor(red: 0.464592, green: 0.52429, blue: 0.589355, alpha: 1)
+    case .argumentLabel:
+        return NSColor(red: CGFloat(255) / 255, green: CGFloat(197) / 255, blue: CGFloat(9) / 255, alpha: 1)
     default:
         return NSColor.textColor
     }
