@@ -80,13 +80,10 @@ class SwiftHighlighterRewriter: SyntaxRewriter {
 
     override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
         node.tokens.forEach { token in
-            print(token.text, "text >\(token.text)<", "expression >\(node.calledExpression.description)<")
-            debugToken(token)
             if token.text == node.calledExpression.description.trimmingCharacters(in: .whitespacesAndNewlines) {
                 if token.text.first?.isUppercase ?? false {
                     parsedCode.enhancableWords.insert(Word(token: token, kind: .typeUsed))
                 } else {
-                    print("not uppercase")
                     parsedCode.enhancableWords.insert(Word(token: token, kind: .functionCall))
                 }
             }
@@ -96,6 +93,7 @@ class SwiftHighlighterRewriter: SyntaxRewriter {
     }
 }
 
+#if DEBUG
 func debugToken(_ token: TokenSyntax?) {
     if let token {
         print(
@@ -107,3 +105,4 @@ func debugToken(_ token: TokenSyntax?) {
         )
     }
 }
+#endif
