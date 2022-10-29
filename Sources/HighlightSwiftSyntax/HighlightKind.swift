@@ -1,29 +1,34 @@
 //
 // https://github.com/atacan
 // 29.10.22
-	
 
 import SwiftSyntax
 
 public enum HighlightKind {
     // swiftformat:sort
     // swiftformat:sort:begin
+    /// function argument label when it is called
     case argument
+    /// function input argument label for external callers
+    case argumentLabel
     case codeComment
     case documentComment
     case functionCall
     case keyWord
     case member
     case numeric
+    /// variable or constant names when they are first declared
     case otherDeclaration
+    /// function input parameter name to be used in the function scope
+    case parameterName
     case plainText
     case preprocessor
+    /// xcode snippet placeholders
     case snippetPlaceholder
     case string
     case typeDeclaration
     case typeUsed
     case whiteSpace
-    case argumentLabel
     // swiftformat:sort:end
 
     static func convertSwiftSyntax(_ swiftSyntax: TokenSyntax) -> HighlightKind {

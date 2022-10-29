@@ -93,7 +93,8 @@ func amazeMidnightColor(kind: HighlightKind) -> NSColor {
     case .typeDeclaration:
         return NSColor(red: 0.999996, green: 0.999939, blue: 0.0410333, alpha: 1)
     case .otherDeclaration:
-        return NSColor(red: 0.916967, green: 0.794512, blue: 0.0427856, alpha: 1)
+//        return NSColor(red: 0.916967, green: 0.794512, blue: 0.0427856, alpha: 1)
+        return NSColor(red: CGFloat(254) / 255, green: CGFloat(251) / 255, blue: CGFloat(83) / 255, alpha: 1)
     case .typeUsed:
         return NSColor(red: 0.131345, green: 0.999677, blue: 0.0236241, alpha: 1)
     case .functionCall:
@@ -106,8 +107,10 @@ func amazeMidnightColor(kind: HighlightKind) -> NSColor {
         return NSColor(red: 0.464592, green: 0.52429, blue: 0.589355, alpha: 1)
     case .documentComment:
         return NSColor(red: 0.464592, green: 0.52429, blue: 0.589355, alpha: 1)
+    case .parameterName:
+        return NSColor(red: CGFloat(241) / 255, green: CGFloat(153) / 255, blue: CGFloat(55) / 255, alpha: 1)
     case .argumentLabel:
-        return NSColor(red: CGFloat(255) / 255, green: CGFloat(197) / 255, blue: CGFloat(9) / 255, alpha: 1)
+        return NSColor(red: CGFloat(66) / 255, green: CGFloat(142) / 255, blue: CGFloat(215) / 255, alpha: 1)
     default:
         return NSColor.textColor
     }
@@ -116,8 +119,8 @@ func amazeMidnightColor(kind: HighlightKind) -> NSColor {
 func amazeMidnightFont(kind: HighlightKind) -> NSFont {
     switch kind {
     case .documentComment:
-        return NSFont.labelFont(ofSize: NSFont.labelFontSize)
+        return NSFont.labelFont(ofSize: NSFont.systemFontSize(for: .large))
     default:
-        return NSFont.monospacedSystemFont(ofSize: NSFont.labelFontSize, weight: NSFont.Weight.regular)
+        return NSFont.monospacedSystemFont(ofSize: NSFont.systemFontSize(for: .large), weight: NSFont.Weight.regular)
     }
 }
