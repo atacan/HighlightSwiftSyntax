@@ -1,21 +1,23 @@
 //
 // https://github.com/atacan
 // 30.10.22
-	
+
 import Cocoa
 import Foundation
+import Prelude
+import SwiftCss
 import SwiftHtml
 import SwiftSyntax
-import Prelude
 import SwiftSyntaxParser
-import SwiftCss
 
 public enum HtmlContainer {
-case preOnly, preCode
+    case preOnly
+    case preCode
 }
 
-public enum HtmlOutputType{
-    case fullHtmlWithStyle, codeOnly
+public enum HtmlOutputType {
+    case fullHtmlWithStyle
+    case codeOnly
 }
 
 extension SwiftHighlighter {
@@ -47,7 +49,7 @@ extension SwiftHighlighter {
             return try Pre(Code(htmlContent())) |> render(_:)
         }
     }
-    
+
     private func htmlContent() throws -> [Tag] {
         let rewriter = SwiftHighlighterRewriter()
         let inputSource = try SyntaxParser.parse(source: inputCode)
@@ -63,7 +65,7 @@ extension SwiftHighlighter {
 
         return output
     }
-    
+
     private func appendableHtml(_ word: Word) -> [Tag] {
         var output = [Tag]()
 
@@ -78,7 +80,7 @@ extension SwiftHighlighter {
 
         return output
     }
-    
+
     private func triviaTag(_ trivia: Trivia) -> [Tag] {
         var output = [Tag]()
         trivia.forEach { piece in
@@ -89,7 +91,7 @@ extension SwiftHighlighter {
 
         return output
     }
-    
+
     private func classedText(kind: HighlightKind, content: String) -> Tag {
         let cssClass = cssClass(kind: kind)
         if !cssClass.isEmpty {
@@ -98,11 +100,12 @@ extension SwiftHighlighter {
             return Text(content)
         }
     }
-    
-    public func styleCss() -> String{
+
+    public func styleCss() -> String {
         Style(styleContent())
-        |> render(_:)
+            |> render(_:)
     }
+
     func styleContent() -> String {
         Stylesheet {
             Media {
@@ -111,18 +114,15 @@ extension SwiftHighlighter {
 //                    WhiteSpace(.pre)
 //                    BackgroundColor(.black)
 //                }
-                HighlightKind.allCases.map {kind in
+                HighlightKind.allCases.map { kind in
                     Selector("pre code .\(cssClass(kind: kind))") {
-                        Color(CSSColor(stringLiteral: amazeMidnightColor(kind: kind) |> hexColor(_:) ))
+                        Color(CSSColor(stringLiteral: amazeMidnightColor(kind: kind) |> hexColor(_:)))
                     }
                 }
             }
         } |> render(_:)
-        
-//        return ""
     }
 }
-
 
 func cssClass(kind: HighlightKind) -> String {
     switch kind {
@@ -164,7 +164,7 @@ func cssClass(kind: HighlightKind) -> String {
 }
 
 private func render(_ tag: Tag) -> String {
-    let doc = Document(.unspecified, {tag})
+    let doc = Document(.unspecified) { tag }
     return DocumentRenderer(minify: true, indent: 2).render(doc)
 }
 
