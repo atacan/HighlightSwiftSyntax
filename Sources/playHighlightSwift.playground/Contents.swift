@@ -48,7 +48,32 @@ print("Amazing!")
 
 let output = try SwiftHighlighter.init(inputCode: inputCode).highlight()
 let html = try SwiftHighlighter.init(inputCode: inputCode).html()
+let style = try SwiftHighlighter.init(inputCode: inputCode).styleCss()
 html |> printThis
+style |> printThis
+
+NSColor(red: 0.942109, green: 0, blue: 0.630242, alpha: 1)
+NSColor(red: CGFloat(66) / 255, green: CGFloat(142) / 255, blue: CGFloat(215) / 255, alpha: 1)
+(0.942109 * 255) |> Int.init
+(0 * 255)
+(0.630242 * 255) |> Int.init
+
+extension NSColor {
+
+    var hexString: String {
+        guard let rgbColor = usingColorSpace(.deviceRGB) else {
+            return "FFFFFF"
+        }
+        let red = Int(round(rgbColor.redComponent * 0xFF))
+        let green = Int(round(rgbColor.greenComponent * 0xFF))
+        let blue = Int(round(rgbColor.blueComponent * 0xFF))
+        let hexString = NSString(format: "#%02X%02X%02X", red, green, blue)
+        return hexString as String
+    }
+
+}
+
+NSColor(red: 0.942109, green: 0, blue: 0.630242, alpha: 1).hexString
 
 
 struct OutputView: View {

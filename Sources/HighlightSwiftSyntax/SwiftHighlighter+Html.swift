@@ -2,12 +2,13 @@
 // https://github.com/atacan
 // 30.10.22
 	
-
+import Cocoa
 import Foundation
 import SwiftHtml
 import SwiftSyntax
 import Prelude
 import SwiftSyntaxParser
+import SwiftCss
 
 public enum HtmlContainer {
 case preOnly, preCode
@@ -91,16 +92,39 @@ extension SwiftHighlighter {
     
     private func classedText(kind: HighlightKind, content: String) -> Tag {
         let cssClass = cssClass(kind: kind)
-        if let cssClass {
+        if !cssClass.isEmpty {
             return Span(content).class(cssClass)
         } else {
             return Text(content)
         }
     }
+    
+    public func styleCss() -> String{
+        Style(styleContent())
+        |> render(_:)
+    }
+    func styleContent() -> String {
+        Stylesheet {
+            Media {
+//                Element(.pre) {
+//                    Display(.block)
+//                    WhiteSpace(.pre)
+//                    BackgroundColor(.black)
+//                }
+                HighlightKind.allCases.map {kind in
+                    Selector("pre code .\(cssClass(kind: kind))") {
+                        Color(CSSColor(stringLiteral: amazeMidnightColor(kind: kind) |> hexColor(_:) ))
+                    }
+                }
+            }
+        } |> render(_:)
+        
+//        return ""
+    }
 }
 
 
-func cssClass(kind: HighlightKind) -> String? {
+func cssClass(kind: HighlightKind) -> String {
     switch kind {
     case .keyWord:
         return "keyWord"
@@ -128,12 +152,33 @@ func cssClass(kind: HighlightKind) -> String? {
         return "parameterName"
     case .argumentLabel:
         return "argumentLabel"
-    default:
-        return nil
+    case .plainText:
+        return ""
+    case .preprocessor:
+        return "preprocessor"
+    case .snippetPlaceholder:
+        return "snippetPlaceholder"
+    case .whiteSpace:
+        return "whiteSpace"
     }
 }
 
 private func render(_ tag: Tag) -> String {
     let doc = Document(.unspecified, {tag})
     return DocumentRenderer(minify: true, indent: 2).render(doc)
+}
+
+func hexColor(_ nsColor: NSColor) -> String {
+    guard let rgbColor = nsColor.usingColorSpace(.deviceRGB) else {
+        return "FFFFFF"
+    }
+    let red = Int(round(rgbColor.redComponent * 0xFF))
+    let green = Int(round(rgbColor.greenComponent * 0xFF))
+    let blue = Int(round(rgbColor.blueComponent * 0xFF))
+    let hexString = NSString(format: "#%02X%02X%02X", red, green, blue)
+    return hexString as String
+}
+
+private func render(_ styleSheet: Stylesheet) -> String {
+    StylesheetRenderer(minify: false, indent: 4).render(styleSheet)
 }

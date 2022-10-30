@@ -20,6 +20,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-syntax.git", exact: "0.50700.1"),
         .package(url: "https://github.com/pointfreeco/swift-prelude", branch: "main"),
         .package(url: "https://github.com/atacan/BinaryBirds-swift-html", branch: "main"),
+        .package(url: "https://github.com/atacan/BinaryBirds-swift-css", branch: "develop"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -31,6 +32,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxParser", package: "swift-syntax"),
                 .product(name: "Prelude", package: "swift-prelude"),
                 .product(name: "SwiftHtml", package: "BinaryBirds-swift-html"),
+                .product(name: "SwiftCss", package: "BinaryBirds-swift-css"),
             ]),
         .testTarget(
             name: "HighlightSwiftSyntaxTests",

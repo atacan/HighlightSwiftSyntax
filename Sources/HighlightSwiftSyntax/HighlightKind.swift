@@ -4,7 +4,7 @@
 
 import SwiftSyntax
 
-public enum HighlightKind {
+public enum HighlightKind: CaseIterable {
     // swiftformat:sort
     // swiftformat:sort:begin
     /// function argument label when it is called
