@@ -48,7 +48,7 @@ print("Amazing!")
 
 let output = try SwiftHighlighter.init(inputCode: inputCode).highlight()
 let html = try SwiftHighlighter.init(inputCode: inputCode).html()
-let style = try SwiftHighlighter.init(inputCode: inputCode).styleCss()
+let style = SwiftHighlighter.init(inputCode: inputCode).styleCss()
 html |> printThis
 style |> printThis
 
