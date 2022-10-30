@@ -5,6 +5,9 @@ import SwiftSyntax
 import SwiftSyntaxParser
 import SwiftUI
 import WebKit
+import Prelude
+
+func printThis<A>(_ a: A){ print(a) }
 
 var greeting = "Hello, playground"
 let mainString = "Hello World"
@@ -44,6 +47,9 @@ print("Amazing!")
 """
 
 let output = try SwiftHighlighter.init(inputCode: inputCode).highlight()
+let html = try SwiftHighlighter.init(inputCode: inputCode).html()
+html |> printThis
+
 
 struct OutputView: View {
     
@@ -57,3 +63,4 @@ struct OutputView: View {
 }
 
 PlaygroundPage.current.setLiveView(OutputView())
+

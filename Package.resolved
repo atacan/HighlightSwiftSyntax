@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "binarybirds-swift-html",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/atacan/BinaryBirds-swift-html",
+      "state" : {
+        "branch" : "main",
+        "revision" : "1fd007c23f0d6e47763e7f3c6b64488b1ac91459"
+      }
+    },
+    {
       "identity" : "swift-prelude",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-prelude",

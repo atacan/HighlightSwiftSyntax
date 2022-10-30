@@ -11,12 +11,17 @@ import SwiftSyntaxParser
 public struct SwiftHighlighter {
     public typealias KindToColor = (HighlightKind) -> NSColor
     public typealias KindToFont = (HighlightKind) -> NSFont
+    public typealias KindToClass = (HighlightKind) -> String?
 
     let inputCode: String
-    var colorFor: (HighlightKind) -> NSColor
-    var fontFor: (HighlightKind) -> NSFont
+    var colorFor: KindToColor
+    var fontFor: KindToFont
+    var classFor: KindToClass
 
-    public init(inputCode: String, colorFor: KindToColor? = nil, fontFor: KindToFont? = nil) {
+    public init(inputCode: String,
+                colorFor: KindToColor? = nil,
+                fontFor: KindToFont? = nil,
+                classFor: KindToClass? = nil) {
         self.inputCode = inputCode
         if let colorFor {
             self.colorFor = colorFor
@@ -27,6 +32,11 @@ public struct SwiftHighlighter {
             self.fontFor = fontFor
         } else {
             self.fontFor = amazeMidnightFont
+        }
+        if let classFor {
+            self.classFor = classFor
+        } else {
+            self.classFor = cssClass
         }
     }
 
@@ -39,7 +49,6 @@ public struct SwiftHighlighter {
         let wordsToHighlight = rewriter.parsedCode.enhancedWords
 
         for word in wordsToHighlight {
-
             let wordAttributed = appendableToken(word)
             output.append(wordAttributed)
         }
