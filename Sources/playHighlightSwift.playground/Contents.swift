@@ -34,22 +34,27 @@ let range = (mainString as NSString).range(of: stringToColor)
 //node.identifier.positionAfterSkippingLeadingTrivia.utf8Offset()
 //"""
 
+//let inputCode = """
+//struct Amazement {}
+///// My documentation comment
+//let inputCode: String
+//let myNumber = 34.9
+//// line comment
+//override public func visit(_ label: String) -> Int {
+//print("Amazing!")
+//    super.visit()
+//}
+//"""
+
 let inputCode = """
 struct Amazement {}
-/// My documentation comment
-let inputCode: String
-let myNumber = 34.9
-// line comment
-override public func visit(_ label: String) -> Int {
-print("Amazing!")
-    super.visit()
-}
+/// My `documentation` comment
 """
 
 let output = try SwiftHighlighter.init(inputCode: inputCode).highlight()
 let html = try SwiftHighlighter.init(inputCode: inputCode).html()
 let style = SwiftHighlighter.init(inputCode: inputCode).styleCss()
-html |> printThis
+//html |> printThis
 style |> printThis
 
 NSColor(red: 0.942109, green: 0, blue: 0.630242, alpha: 1)
