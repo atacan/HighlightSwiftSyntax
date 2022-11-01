@@ -109,14 +109,17 @@ extension SwiftHighlighter {
     func styleContent() -> String {
         Stylesheet {
             Media {
-//                Element(.pre) {
-//                    Display(.block)
-//                    WhiteSpace(.pre)
-//                    BackgroundColor(.black)
-//                }
+                Element(.pre) {
+                    Display(.block)
+                    WhiteSpace(.pre)
+                    BackgroundColor(.black)
+                    Color(CSSColor.snow)
+                    Padding(top: .px(15), right: .px(20), bottom: .px(15), left: .px(20))
+                }
                 HighlightKind.allCases.map { kind in
-                    Selector("pre code .\(cssClass(kind: kind))") {
-                        Color(CSSColor(stringLiteral: amazeMidnightColor(kind: kind) |> hexColor(_:)))
+                    Elements(inside: [HTMLElement.pre, HTMLElement.code, cssClass(kind: kind)]) {
+                        Color(CSSColor(stringLiteral: kind |> amazeMidnightColor >>> hexColor(_:)))
+                        kind |> cssFont
                     }
                 }
             }
@@ -160,6 +163,15 @@ func cssClass(kind: HighlightKind) -> String {
         return "snippetPlaceholder"
     case .whiteSpace:
         return "whiteSpace"
+    }
+}
+
+func cssFont(kind: HighlightKind) -> [Property] {
+    switch kind {
+    case .documentComment:
+        return [FontFamily(FontFamilyValue.family("sans-serif")), FontSize("calc(100% - 1px)")]
+    default:
+        return []
     }
 }
 
