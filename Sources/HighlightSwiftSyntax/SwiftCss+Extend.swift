@@ -9,13 +9,13 @@ func Elements(_ names: [any Stylable], separator: String, @PropertyBuilder _ bui
 }
 
 /// ``Elements(inside: [.div, .p])``
-/// Selects all <p> elements inside <div> elements: `div p`
+/// Selects all `<p>` elements inside `<div> `elements: `div p`
 func Elements(inside: [any Stylable], @PropertyBuilder _ builder: () -> [Property]) -> SwiftCss.Selector {
     Elements(inside, separator: " ", builder)
 }
 
 /// ``Elements(parental: [.div, .p])``
-/// Selects all <p> elements where the parent is a <div> element: `div > p`
+/// Selects all `<p>` elements where the parent is a `<div>` element: `div > p`
 func Elements(parental: [any Stylable], @PropertyBuilder _ builder: () -> [Property]) -> SwiftCss.Selector {
     Elements(parental, separator: " > ", builder)
 }
