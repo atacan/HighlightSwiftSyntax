@@ -30,7 +30,7 @@ extension HTMLElement: Stylable {
     }
 }
 
-extension String: Stylable {
+extension HighlightKind: Stylable {
     var selector: String {
         ".\(self)"
     }

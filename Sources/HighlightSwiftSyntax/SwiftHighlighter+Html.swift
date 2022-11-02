@@ -46,7 +46,9 @@ extension SwiftHighlighter {
         case .preOnly:
             return try Pre(htmlContent()) |> render(_:)
         case .preCode:
-            return try Pre(Code(htmlContent())) |> render(_:)
+            return try Pre(
+                Code(htmlContent()).class("language-swift")
+            ) |> render(_:)
         }
     }
 
@@ -94,7 +96,7 @@ extension SwiftHighlighter {
 
     private func classedText(kind: HighlightKind, content: String) -> Tag {
         let cssClass = cssClass(kind: kind)
-        if !cssClass.isEmpty {
+        if kind != .plainText {
             return Span(content).class(cssClass)
         } else {
             return Text(content)
@@ -117,7 +119,7 @@ extension SwiftHighlighter {
                     Padding(top: .px(15), right: .px(20), bottom: .px(15), left: .px(20))
                 }
                 HighlightKind.allCases.map { kind in
-                    Elements(inside: [HTMLElement.pre, HTMLElement.code, cssClass(kind: kind)]) {
+                    Elements(inside: [HTMLElement.pre, HTMLElement.code, kind]) {
                         Color(CSSColor(stringLiteral: kind |> amazeMidnightColor >>> hexColor(_:)))
                         kind |> cssFont
                     }
@@ -128,42 +130,7 @@ extension SwiftHighlighter {
 }
 
 func cssClass(kind: HighlightKind) -> String {
-    switch kind {
-    case .keyWord:
-        return "keyWord"
-    case .string:
-        return "string"
-    case .numeric:
-        return "numeric"
-    case .typeDeclaration:
-        return "typeDeclaration"
-    case .otherDeclaration:
-        return "otherDeclaration"
-    case .typeUsed:
-        return "typeUsed"
-    case .functionCall:
-        return "functionCall"
-    case .member:
-        return "member"
-    case .argument:
-        return "argument"
-    case .codeComment:
-        return "codeComment"
-    case .documentComment:
-        return "documentComment"
-    case .parameterName:
-        return "parameterName"
-    case .argumentLabel:
-        return "argumentLabel"
-    case .plainText:
-        return ""
-    case .preprocessor:
-        return "preprocessor"
-    case .snippetPlaceholder:
-        return "snippetPlaceholder"
-    case .whiteSpace:
-        return "whiteSpace"
-    }
+    return "\(kind)"
 }
 
 func cssFont(kind: HighlightKind) -> [Property] {

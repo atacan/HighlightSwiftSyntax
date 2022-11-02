@@ -54,7 +54,7 @@ struct Amazement {}
 let output = try SwiftHighlighter.init(inputCode: inputCode).highlight()
 let html = try SwiftHighlighter.init(inputCode: inputCode).html()
 let style = SwiftHighlighter.init(inputCode: inputCode).styleCss()
-//html |> printThis
+html |> printThis
 style |> printThis
 
 NSColor(red: 0.942109, green: 0, blue: 0.630242, alpha: 1)
