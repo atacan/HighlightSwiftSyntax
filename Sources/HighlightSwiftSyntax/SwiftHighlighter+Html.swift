@@ -108,7 +108,7 @@ extension SwiftHighlighter {
             |> render(_:)
     }
 
-    func styleContent() -> String {
+    public func styleContent() -> String {
         Stylesheet {
             Media {
                 Element(.pre) {
@@ -133,7 +133,7 @@ func cssClass(kind: HighlightKind) -> String {
     return "\(kind)"
 }
 
-func cssFont(kind: HighlightKind) -> [Property] {
+private func cssFont(kind: HighlightKind) -> [Property] {
     switch kind {
     case .documentComment:
         return [FontFamily(FontFamilyValue.family("sans-serif")), FontSize("calc(100% - 1px)")]
@@ -147,7 +147,7 @@ private func render(_ tag: Tag) -> String {
     return DocumentRenderer(minify: true, indent: 2).render(doc)
 }
 
-func hexColor(_ nsColor: NSColor) -> String {
+private func hexColor(_ nsColor: NSColor) -> String {
     guard let rgbColor = nsColor.usingColorSpace(.deviceRGB) else {
         return "FFFFFF"
     }
