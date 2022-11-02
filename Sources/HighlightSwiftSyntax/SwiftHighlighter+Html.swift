@@ -120,7 +120,7 @@ extension SwiftHighlighter {
                 }
                 HighlightKind.allCases.map { kind in
                     Elements(inside: [HTMLElement.pre, HTMLElement.code, kind]) {
-                        Color(CSSColor(stringLiteral: kind |> amazeMidnightColor >>> hexColor(_:)))
+                        Color(CSSColor(stringLiteral: kind |> colorFor >>> hexColor(_:)))
                         kind |> cssFont
                     }
                 }
