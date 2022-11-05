@@ -20,6 +20,10 @@ func Elements(parental: [any Stylable], @PropertyBuilder _ builder: () -> [Prope
     Elements(parental, separator: " > ", builder)
 }
 
+func Element(_ element: any Stylable, ofClass: any Stylable) -> [Stylable] {
+    [element, ofClass]
+}
+
 protocol Stylable {
     var selector: String { get }
 }
@@ -33,5 +37,11 @@ extension HTMLElement: Stylable {
 extension HighlightKind: Stylable {
     var selector: String {
         ".\(self)"
+    }
+}
+
+extension [Stylable]: Stylable{
+    var selector: String {
+        self.map(\.selector).joined(separator: ".")
     }
 }

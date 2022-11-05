@@ -119,7 +119,8 @@ extension SwiftHighlighter {
                     Padding(top: .px(15), right: .px(20), bottom: .px(15), left: .px(20))
                 }
                 HighlightKind.allCases.map { kind in
-                    Elements(inside: [HTMLElement.pre, HTMLElement.code, kind]) {
+//                    Elements(inside: [HTMLElement.pre, HTMLElement.code, kind]) {
+                    Elements(inside: [HTMLElement.pre, Element(HTMLElement.code, ofClass: Css.languageSwift), kind]) {
                         Color(CSSColor(stringLiteral: kind |> colorFor >>> hexColor(_:)))
                         kind |> cssFont
                     }
@@ -160,4 +161,12 @@ private func hexColor(_ nsColor: NSColor) -> String {
 
 private func render(_ styleSheet: Stylesheet) -> String {
     StylesheetRenderer(minify: false, indent: 4).render(styleSheet)
+}
+
+enum Css: String, Stylable {
+    var selector: String {
+        self.rawValue
+    }
+    
+    case languageSwift = "language-swift"
 }
