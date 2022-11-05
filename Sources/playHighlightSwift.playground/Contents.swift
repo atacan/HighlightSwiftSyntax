@@ -49,6 +49,7 @@ let range = (mainString as NSString).range(of: stringToColor)
 let inputCode = """
 struct Amazement {}
 /// My `documentation` comment
+html |> printThis
 """
 
 let output = try SwiftHighlighter.init(inputCode: inputCode).highlight()
@@ -59,6 +60,7 @@ style |> printThis
 
 NSColor(red: 0.942109, green: 0, blue: 0.630242, alpha: 1)
 NSColor(red: CGFloat(66) / 255, green: CGFloat(142) / 255, blue: CGFloat(215) / 255, alpha: 1)
+NSColor(red: 254, green: 250, blue: 250, alpha: 1)
 (0.942109 * 255) |> Int.init
 (0 * 255)
 (0.630242 * 255) |> Int.init

@@ -21,7 +21,8 @@ public struct SwiftHighlighter {
     public init(inputCode: String,
                 colorFor: KindToColor? = nil,
                 fontFor: KindToFont? = nil,
-                classFor: KindToClass? = nil) {
+                classFor: KindToClass? = nil)
+    {
         self.inputCode = inputCode
         if let colorFor {
             self.colorFor = colorFor
@@ -121,7 +122,7 @@ func amazeMidnightColor(kind: HighlightKind) -> NSColor {
     case .argumentLabel:
         return NSColor(red: CGFloat(66) / 255, green: CGFloat(142) / 255, blue: CGFloat(215) / 255, alpha: 1)
     default:
-        return NSColor.textColor
+        return NSColor(red: CGFloat(255) / 255, green: CGFloat(250) / 255, blue: CGFloat(250) / 255, alpha: 1)
     }
 }
 
