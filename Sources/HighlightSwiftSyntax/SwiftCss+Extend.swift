@@ -36,7 +36,7 @@ extension HTMLElement: Stylable {
 
 extension HighlightKind: Stylable {
     var selector: String {
-        ".\(self)"
+        ".\(cssClass(kind: self))"
     }
 }
 

@@ -13,6 +13,7 @@ import SwiftSyntaxParser
 public enum HtmlContainer {
     case preOnly
     case preCode
+    case contentOnly
 }
 
 public enum HtmlOutputType {
@@ -44,15 +45,17 @@ extension SwiftHighlighter {
     public func html(container: HtmlContainer = .preCode) throws -> String {
         switch container {
         case .preOnly:
-            return try Pre(htmlContent()) |> render(_:)
+            return try Pre(htmlContent()) |> render
         case .preCode:
             return try Pre(
                 Code(htmlContent()).class("language-swift")
             ) |> render(_:)
+        case .contentOnly:
+            return try htmlContent().map(render).joined(separator: "\n")
         }
     }
 
-    private func htmlContent() throws -> [Tag] {
+    public func htmlContent() throws -> [Tag] {
         let rewriter = SwiftHighlighterRewriter()
         let inputSource = try SyntaxParser.parse(source: inputCode)
         _ = rewriter.visit(inputSource)
@@ -165,8 +168,8 @@ private func render(_ styleSheet: Stylesheet) -> String {
 
 enum Css: String, Stylable {
     var selector: String {
-        self.rawValue
+        rawValue
     }
-    
+
     case languageSwift = "language-swift"
 }
