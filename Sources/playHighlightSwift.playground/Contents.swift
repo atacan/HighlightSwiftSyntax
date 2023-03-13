@@ -46,10 +46,25 @@ let range = (mainString as NSString).range(of: stringToColor)
 //}
 //"""
 
+//let inputCode = """
+//struct Amazement {}
+///// My `documentation` comment
+//html |> printThis
+//"""
+
 let inputCode = """
-struct Amazement {}
-/// My `documentation` comment
-html |> printThis
+        class Player {
+            var coinsInPurse: Int
+            init(coins: Int) {
+                coinsInPurse = Bank.distribute(coins: coins)
+            }
+            func win(coins: Int) {
+                coinsInPurse += Bank.distribute(coins: coins)
+            }
+            deinit {
+                Bank.receive(coins: coinsInPurse)
+            }
+        }
 """
 
 let output = try SwiftHighlighter.init(inputCode: inputCode).highlight()
